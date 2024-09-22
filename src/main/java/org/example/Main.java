@@ -15,10 +15,9 @@ public class Main {
 
         Class.forName("com.mysql.cj.jdbc.Driver");
 
-
-
         try {
             connection = DriverManager.getConnection(url, "root", "root");
+            connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             while (true) {
                 System.out.println("Ingrese el id de la computadora:");
@@ -46,6 +45,7 @@ public class Main {
                     }
                 } catch (SQLException e) {
                     System.out.println("Error al insertar los datos.");
+                    connection.rollback();
                     e.printStackTrace();
                 }
 
@@ -65,9 +65,6 @@ public class Main {
             }
         }
 
-    }
-
-    public void connectDB() throws SQLException {
     }
 
 }
