@@ -21,6 +21,8 @@ public class Main {
             connection = DriverManager.getConnection(url, "root", "admin");
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
+            crearTablas();
+
             while (true) {
                 System.out.println("Ingrese el id de la computadora:");
                 long id = Long.parseLong(scanner.nextLine());
@@ -101,6 +103,38 @@ public class Main {
             }
         }
 
+    }
+
+    private static void crearTablas() {
+        String crearComputadora = "CREATE TABLE IF NOT EXISTS Computadora (" +
+                "Id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "Codigo VARCHAR(100) NOT NULL, " +
+                "Marca VARCHAR(100) NOT NULL, " +
+                "Modelo VARCHAR(100) NOT NULL" +
+                ")";
+
+        String crearComponente = "CREATE TABLE IF NOT EXISTS Componente (" +
+                "Id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "Nombre VARCHAR(100) NOT NULL, " +
+                "NroSerie VARCHAR(150) NOT NULL, " +
+                "Id_Computadora BIGINT NOT NULL, " +
+                "FOREIGN KEY (Id_Computadora) REFERENCES Computadora(Id)" +
+                ")";
+
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(crearComputadora);
+            statement.executeUpdate(crearComponente);
+            System.out.println("Tablas creadas exitosamente.");
+            connection.commit();
+        } catch (SQLException e) {
+            System.out.println("Error al crear tablas.");
+            e.printStackTrace();
+            try {
+                connection.rollback(); //En caso de error revertir cambios
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+        }
     }
 
 }
