@@ -45,7 +45,7 @@ public class Main {
 
                     int rowsInserted = pstmt.executeUpdate();
                     if (rowsInserted > 0) {
-                        System.out.println("¡Inserción exitosa!");
+                        System.out.println("Inserción exitosa!");
                     }
                 } catch (SQLException e) {
                     System.out.println("Error al insertar los datos.");
@@ -78,7 +78,7 @@ public class Main {
 
                         int rowsInserted = pstmtComponente.executeUpdate();
                         if (rowsInserted > 0) {
-                            System.out.println("¡Componente '" + datosComponente[0] + "' insertado exitosamente!");
+                            System.out.println("Componente '" + datosComponente[0] + "' insertado exitosamente");
                         }
                     }
                 } catch (SQLException e) {
@@ -87,7 +87,7 @@ public class Main {
                     e.printStackTrace();
                 }
 
-                System.out.println("¿Desea ingresar otra computadora? (s/n)");
+                System.out.println("Desea ingresar otra computadora? (s/n)");
                 String continuar = scanner.nextLine();
                 if (!continuar.equalsIgnoreCase("s")) {
                     break;
@@ -124,7 +124,7 @@ public class Main {
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(crearComputadora);
             statement.executeUpdate(crearComponente);
-            System.out.println("Tablas creadas exitosamente.");
+            System.out.println("Tablas creadas.");
             connection.commit();
         } catch (SQLException e) {
             System.out.println("Error al crear tablas.");
