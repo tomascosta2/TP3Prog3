@@ -1,5 +1,7 @@
 package org.example;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -16,7 +18,7 @@ public class Main {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         try {
-            connection = DriverManager.getConnection(url, "root", "root");
+            connection = DriverManager.getConnection(url, "root", "admin");
             connection.setAutoCommit(false);
             Statement statement = connection.createStatement();
             while (true) {
@@ -45,6 +47,40 @@ public class Main {
                     }
                 } catch (SQLException e) {
                     System.out.println("Error al insertar los datos.");
+                    connection.rollback();
+                    e.printStackTrace();
+                }
+
+                List<String> componentes = new ArrayList<>();//Lista de componentes
+                //Se ingresa cada componente
+                while (true) {
+                    System.out.println("Ingrese el nombre del componente ('S' para salir):");
+                    String nombreComponente = scanner.nextLine();
+                    if (nombreComponente.equalsIgnoreCase("s")) {
+                        break;
+                    }
+
+                    System.out.println("Ingrese el número de serie del componente:");
+                    String nroSerie = scanner.nextLine();
+
+                    componentes.add(nombreComponente + "," + nroSerie);
+                }
+                //Insertamos cada componente de componentes en la DB con el id de la computadora
+                String sqlComponente = "INSERT INTO Componente (Nombre, NroSerie, Id_Computadora) VALUES (?, ?, ?)";
+                try (PreparedStatement pstmtComponente = connection.prepareStatement(sqlComponente)) {
+                    for (String comp : componentes) {
+                        String[] datosComponente = comp.split(",");
+                        pstmtComponente.setString(1, datosComponente[0]); // Nombre
+                        pstmtComponente.setString(2, datosComponente[1]); //Serie
+                        pstmtComponente.setLong(3, id); //Id_Computadora
+
+                        int rowsInserted = pstmtComponente.executeUpdate();
+                        if (rowsInserted > 0) {
+                            System.out.println("¡Componente '" + datosComponente[0] + "' insertado exitosamente!");
+                        }
+                    }
+                } catch (SQLException e) {
+                    System.out.println("Error al insertar los componentes.");
                     connection.rollback();
                     e.printStackTrace();
                 }
